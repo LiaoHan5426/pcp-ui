@@ -6,8 +6,11 @@
           <slot :data="data,index">
           </slot>
         </li>
+        <li v-if="noMore">
+          <p  style="margin-top:10px;font-size:13px;color:#ccc;text-align: center">没有更多了</p>
+        </li>
       </ul>
-      <p v-if="noMore" style="margin-top:10px;font-size:13px;color:#ccc;text-align: center">没有更多了</p>
+
     </div>
   </div>
 </template>
@@ -49,7 +52,9 @@
         this.loading = true;
         const self = this;
         setTimeout(() => {
+          if (!self.disabled) {
             self.getMessage(); //调用接口，此时页数+1，查询下一页数据
+          }
         }, 2000);
       },
       getMessage() {
@@ -61,10 +66,11 @@
         const self = this;
         this.BaseHttp.get(this.searchUrl, param).then(res => {
           const {pageInfo} = res.data;
-          self.pageInfo = pageInfo;
-          console.log(self.pageInfo)
+          if (pageInfo !=undefined) {
+            self.pageInfo = pageInfo;
+            this.list = this.list.concat(self.pageInfo.list); //因为每次后端返回的都是数组，所以这边把数组拼接到一起
+          }
           this.loading = false;
-          this.list = this.list.concat(self.pageInfo.list); //因为每次后端返回的都是数组，所以这边把数组拼接到一起
         })
           .catch(err => {
             console.log(err);
@@ -103,7 +109,7 @@
   #box {
     width: 100%;
     height: 100%;
-    position: absolute;
+    position: relative;
     overflow-y: auto;
   }
 

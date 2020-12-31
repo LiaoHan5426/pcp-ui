@@ -10,7 +10,16 @@ export default new Router({
     {
       path: '/',
       name: 'Index',
-      component: () => import("../components/Index")
+      component: () => import("../components/Index"),
+      meta:{
+        title: "首页",
+        keepAlive: true,
+        scrollToTop: false
+      }
+    },{
+      path: "/personal",
+      name: "PersonalPage",
+      component: () => import("../components/common/personalPage/PersonalPage")
     }
   ]
 })
